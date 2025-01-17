@@ -90,5 +90,22 @@
             "Adventure",
             "Drama"
         ]
+    },
+    {
+        "title": "La passione di cristo",
+        "director": "Mel Gibson",
+        "year": 2000,
+        "genres": [
+            "fantasy",
+            " drama"
+        ]
+    },
+    {
+        "title": "mental breakdown totale prima o poi si perch\u00e8 no",
+        "director": "tanotech",
+        "year": 2025,
+        "genres": [
+            "tutti quelli esistenti + 1"
+        ]
     }
 ]
