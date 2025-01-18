@@ -1,18 +1,10 @@
 [
     {
         "title": "The Godfather",
-        "director": "Francis Ford Coppola",
+        "director": "Francis Ford Coppola      ",
         "year": 1972,
         "genres": [
             "Crime",
-            "Drama"
-        ]
-    },
-    {
-        "title": "The Shawshank Redemption",
-        "director": "Frank Darabont",
-        "year": 1994,
-        "genres": [
             "Drama"
         ]
     },
@@ -36,32 +28,12 @@
         ]
     },
     {
-        "title": "The Dark Knight",
-        "director": "Christopher Nolan",
-        "year": 2008,
-        "genres": [
-            "Action",
-            "Crime",
-            "Drama"
-        ]
-    },
-    {
         "title": "Forrest Gump",
         "director": "Robert Zemeckis",
         "year": 1994,
         "genres": [
             "Drama",
             "Romance"
-        ]
-    },
-    {
-        "title": "Inception",
-        "director": "Christopher Nolan",
-        "year": 2010,
-        "genres": [
-            "Action",
-            "Sci-Fi",
-            "Thriller"
         ]
     },
     {
@@ -101,11 +73,23 @@
         ]
     },
     {
-        "title": "mental breakdown totale prima o poi si perch\u00e8 no",
-        "director": "tanotech",
-        "year": 2025,
+        "title": "Inception",
+        "director": "Chris Nolan",
+        "year": 2011,
         "genres": [
-            "tutti quelli esistenti + 1"
+            "Action",
+            "Sci-Fi",
+            "Thriller"
+        ]
+    },
+    {
+        "title": "The Dark Knight",
+        "director": "Christopher Nolan",
+        "year": 2008,
+        "genres": [
+            "Action",
+            "Crime",
+            "Drama"
         ]
     }
 ]

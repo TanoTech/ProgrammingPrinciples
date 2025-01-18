@@ -9,6 +9,7 @@ class Movie:
     genres: List[str]
 
     def to_dict(self) -> dict:
+        """convert the instance to a dictionary"""
         return {
             "title": self.title,
             "director": self.director,
@@ -18,6 +19,7 @@ class Movie:
 
     @classmethod
     def from_dict(cls, data: dict) -> 'Movie':
+        """froma  dictionary it creats a nuove Movie instace"""
         return cls(
             title=data["title"],
             director=data["director"],

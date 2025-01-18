@@ -1,81 +1,72 @@
-from typing import List, Optional
+from typing import List, Dict, Any, Optional
 import json
-from exceptions.exception_handler import MovieNotFoundError,SuccessKeys, ErrorKeys, handle_operation
-from constant.constants import CURRENT_YEAR
 from entities.movie import Movie
+from constant.constants import CURRENT_YEAR
 
 class MovieMethods:
-
-    def __init__(self, movies: Optional[List[Movie]] = None):
-        self.movies = movies or []
+    def __init__(self):
+        """Use Movie class to initialize constructor"""
+        self.movies: List[Movie] = []
 
     @staticmethod
-    def load_json(file_path: str) -> List[Movie]:
+    def clean_string(s: str) -> str:
+        return s.strip().lower()
+
+    @staticmethod
+    def compare_strings_case_insensitive(s1: str, s2: str) -> bool:
+        return MovieMethods.clean_string(s1) == MovieMethods.clean_string(s2)
+
+    def load_movies_from_json(self, file_path: str) -> List[Dict[str, Any]]:
+        """load from the json file e gives dictionary"""
         with open(file_path, 'r') as f:
             movies_data = json.load(f)
-            return [Movie.from_dict(movie) for movie in movies_data]
+            self.movies = [Movie.from_dict(movie) for movie in movies_data]
+            return movies_data
 
-    def save_json(self, file_path: str) -> None:
-        movies_data = [movie.to_dict() for movie in self.movies]
+    def save_movies_to_json(self, file_path: str, movies_data: List[Dict[str, Any]]) -> None:
+        """save movies to json"""
         with open(file_path, 'w') as f:
             json.dump(movies_data, f, indent=4)
 
-    def add_movie(self, title: str, director: str, year: int, genres: List[str]) -> Movie:
-        if not title or not director or not year or not genres:
-            raise ValueError("All fields are required")
+    def add_movie_entry(self, title: str, director: str, year: int, genres: List[str]) -> Dict[str, Any]:
+        """ input validation """
+        if not title or not title.strip():
+            raise ValueError("Title cannot be empty")
+        if not director or not director.strip():
+            raise ValueError("Director cannot be empty")
+        if not genres:
+            raise ValueError("Genres list cannot be empty")
+        if not isinstance(genres, list) or not all(isinstance(g, str) for g in genres):
+            raise ValueError("Genres must be a list of strings")
+        if not isinstance(year, int):
+            raise ValueError("Year must be an integer")
+            
+        """check if the movie exists"""
+        existing_movie = self.find_movie_by_title(title)
+        if existing_movie:
+            raise ValueError("Movie already exists in the library")
+            
+        """check if the year is correct"""
         if year < 1895 or year > CURRENT_YEAR:
-            raise ValueError("Year must be between 1895 and ${CURRENT_YEAR}")
+            raise ValueError(f"Year must be between 1895 and {CURRENT_YEAR}")
+        
+        """strings cleaning"""
+        title = title.strip()
+        director = director.strip()
+        genres = [g.strip() for g in genres if g.strip()]
+        
         movie = Movie(title=title, director=director, year=year, genres=genres)
         self.movies.append(movie)
-        return movie
+        return movie.to_dict()
 
-    def remove_movie(self, title: str) -> Movie:
-        movie = next((m for m in self.movies if m.title.lower() == title.lower()), None)
-        if not movie:
-            raise MovieNotFoundError()
-        self.movies.remove(movie)
-        return movie
+    def find_movie_by_title(self, title: str) -> Optional[Movie]:
+        """find by title case insensitive"""
+        return next(
+            (movie for movie in self.movies 
+             if self.compare_strings_case_insensitive(movie.title, title)),
+            None
+        )
 
-    def update_movie(self, title: str, 
-                     director: Optional[str] = None, 
-                     year: Optional[int] = None, 
-                     genres: Optional[List[str]] = None) -> Movie:
-        movie = next((m for m in self.movies if m.title.lower() == title.lower()), None)
-        if not movie:
-            raise MovieNotFoundError()
-        
-        if director:
-            movie.director = director
-        if year:
-            movie.year = year
-        if genres:
-            movie.genres = genres
-        return movie
-    
-    def get_movies_by_title_substring(self, substring: str) -> List[Movie]:
-        return [movie for movie in self.movies if substring in movie.title]
-
-    def get_movies_by_year(self, year: int) -> List[Movie]:
-        return [movie for movie in self.movies if movie.year == year]
-
-    def count_movies_by_director(self, director: str) -> int:
-        return len([movie for movie in self.movies if movie.director.lower() == director.lower()])
-
-    def get_movies_by_genre(self, genre: str) -> List[Movie]:
-        return [movie for movie in self.movies if genre.lower() in [g.lower() for g in movie.genres]]
-
-    def get_oldest_movie_title(self) -> str:
-        return min(self.movies, key=lambda x: x.year).title
-
-    def get_average_release_year(self) -> float:
-        return sum(movie.year for movie in self.movies) / len(self.movies)
-
-    def get_longest_title(self) -> str:
-        return max(self.movies, key=lambda x: len(x.title)).title
-
-    def get_titles_between_years(self, start_year: int, end_year: int) -> List[str]:
-        return [movie.title for movie in self.movies if start_year <= movie.year <= end_year]
-
-    def get_most_common_year(self) -> int:
-        years = [movie.year for movie in self.movies]
-        return max(set(years), key=years.count)
+    def get_movies_dicts(self) -> List[Dict[str, Any]]:
+        """makes all movies from json to dictionary"""
+        return [movie.to_dict() for movie in self.movies]
